@@ -1,0 +1,60 @@
+import time
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+valued = "Code applied ..!"
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+driver.get("https://rahulshettyacademy.com/seleniumPractise/#/")
+# driver.implicitly_wait(5)
+driver.maximize_window()
+driver.find_element(By.CSS_SELECTOR,"input.search-keyword").send_keys("Be")
+time.sleep(5)
+count=len(driver.find_elements(By.XPATH, "//div[@class='products']/div"))
+assert count == 5
+vegieslist = []
+namesave = driver.find_elements(By.XPATH, "//div[@class='products']/div/h4")
+for names in namesave:
+    vegieslist.append(names.text)
+
+Vegt = []
+
+
+buttons=driver.find_elements(By.XPATH, "//div[@class='product-action']/button")
+for button in buttons:
+    vett = button.find_element(By.XPATH, "parent::div/parent::div/h4").text
+    Vegt.append(vett)
+    button.click()
+print(Vegt)
+assert vegieslist == Vegt
+driver.find_element(By.CSS_SELECTOR, "img[alt='Cart']").click()
+
+driver.find_element(By.XPATH, "//button[text()='PROCEED TO CHECKOUT']").click()
+# time.sleep(5)
+wait = WebDriverWait(driver, 20)
+wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, "promoCode")))
+Vegt2 = []
+Veggies = driver.find_elements(By.CSS_SELECTOR, "p.product-name")
+for veg in Veggies:
+    Vegt2.append(veg.text)
+print(Vegt2)
+
+assert Vegt == Vegt2 # this will compare two lists
+
+driver.find_element(By.XPATH, "//input[@class='promoCode']").send_keys("rahulshettyacademy")
+driver.find_element(By.XPATH, "//button[@class='promoBtn']").click()
+wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, "promoInfo")))
+value = driver.find_element(By.CLASS_NAME, "promoInfo").text
+assert valued in value
+sumsum = 0
+quantityammount = driver.find_elements(By.XPATH,"//tbody/tr/td[5]")
+for quantity in quantityammount:
+    sumsum = sumsum + int(quantity.text)
+totalamt = int(driver.find_element(By.CSS_SELECTOR, ".totamt").text)
+assert sumsum == totalamt
+time.sleep(15)
