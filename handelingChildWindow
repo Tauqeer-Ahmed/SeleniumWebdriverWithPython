@@ -1,0 +1,16 @@
+from selenium import webdriver
+import time
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+driver.get("https://the-internet.herokuapp.com/windows") #site to test automation practice
+driver.find_element(By.LINK_TEXT, "Click Here").click() #to find link text Click Here.
+childwindows = driver.window_handles[1] #window_handles[0] means parent page and #window_handles[1] means child
+driver.switch_to.window(childwindows) #here we are switching to page at index 1
+time.sleep(2)
+print(driver.find_element(By.TAG_NAME,"h3").text) #to print page content of child page
+driver.close() #to close child window
+driver.switch_to.window(driver.window_handles[0]) #here we are switching to page at index 0
+print(driver.find_element(By.TAG_NAME,"h3").text) #to print page content of parent page
