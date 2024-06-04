@@ -1,0 +1,21 @@
+import time
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+driver.get("https://rahulshettyacademy.com/AutomationPractice/")
+time.sleep(5)
+# driver.find_element(By.ID,"details-button").click()
+# time.sleep(5)
+# driver.find_element(By.ID, "proceed-link").click()
+# time.sleep(5)
+Action = ActionChains(driver)
+Menu = driver.find_element(By.ID, "mousehover")
+Action.move_to_element(Menu).perform()
+child = driver.find_element(By.LINK_TEXT, "Top")
+Action.move_to_element(child).click().perform()
+time.sleep(3)
